@@ -5,17 +5,20 @@ from tkinter import Label
 from tkinter import messagebox
 from place import *
 from item_counter import Counter
+from game import Game
 
 # FIXES BLURRY TEXT ON WINDOWS -----------------
 # from ctypes import windll
 #windll.shcore.SetProcessDpiAwareness(1)
 
 # Window Settings
-game_window = tk.Tk()
-game_window.title('Jonty\'s Sweet Cookie Clicker')
-game_window.geometry('650x450+700+300')
-game_window.resizable(False, False)
-game_window.attributes('-topmost', 1)
+# game.window = tk.Tk()
+# game.window.title('Jonty\'s Sweet Cookie Clicker')
+# game.window.geometry('650x450+700+300')
+# game.window.resizable(False, False)
+# game.window.attributes('-topmost', 1)
+
+game = Game()
 
 
 
@@ -68,8 +71,8 @@ def change_to_eggs():
     counter.item = 'egg'
     global drop_10_button
     global drop_20_button
-    drop_10_button = Button(game_window, text=f'Drop 10 {counter.item}s', height=3, width=16, command=drop_10_cookies)
-    drop_20_button = Button(game_window, text=f'Drop 20 {counter.item}s', height=3, width=16, command=drop_20_cookies)
+    drop_10_button = Button(game.window, text=f'Drop 10 {counter.item}s', height=3, width=16, command=drop_10_cookies)
+    drop_20_button = Button(game.window, text=f'Drop 20 {counter.item}s', height=3, width=16, command=drop_20_cookies)
     display_cookies()
 
 
@@ -96,7 +99,7 @@ def ol_switcheroo():
     global has_switcherood
     if has_switcherood:
         return
-    clear_window(game_window)
+    clear_window(game.window)
     display_cookies()
     place_bottom_left(button_add_one)
     place_bottom_right(drop_10_button, 50)
@@ -107,21 +110,21 @@ def ol_switcheroo():
 
 
 def switch_back():
-    clear_window(game_window)
+    clear_window(game.window)
     display_cookies()
     place_bottom_right(button_add_one, 50)
     place_bottom_left(drop_20_button)
 
 
 def get_mugged():
-    clear_window(game_window)
+    clear_window(game.window)
     display_cookies()
     mugger_label.place(x=300, y=80)
     oh_fuck_button.place(x=300, y=250)
 
 
 def surrender_cookies():
-    clear_window(game_window)
+    clear_window(game.window)
     counter.count = 1
     display_cookies()
     Label(text=f'''The mugger takes pity on you and lets you keep 1 {counter.item}.
@@ -134,7 +137,7 @@ onto your one remaining {counter.item}.''').place(x=50, y=100)
 
 
 def run_from_dog():
-    clear_window(game_window)
+    clear_window(game.window)
     display_cookies()
     Label(text='''Good choice. As you run, you see the mugger up ahead.
 He thinks your chasing him. As you get close he stabs you.
@@ -143,7 +146,7 @@ He thinks your chasing him. As you get close he stabs you.
 
 
 def punt_dog():
-    clear_window(game_window)
+    clear_window(game.window)
     display_cookies()
     # Random boolean?
     punt_successful = random.choice([True, False])
@@ -155,11 +158,11 @@ def punt_dog():
     else:
         Label(text='''Against all odds you successfully punt the dog off a nearby cliff.
 You're alive but you just killed a dog. Good job.''').place(x=50, y=100)
-    place_bottom_right(Button(text='Oh no', width=10, height=3, command=game_window.destroy), 100)
+    place_bottom_right(Button(text='Oh no', width=10, height=3, command=game.window.destroy), 100)
 
 
 def death_by_dog():
-    clear_window(game_window)
+    clear_window(game.window)
     display_cookies()
     messagebox.showinfo(message='''Just as the dog is about to finish you off,
 the mugger charges in, barreling into the dog
@@ -170,10 +173,10 @@ Maybe he's not such a bad guy after all''')
 
 
 def go_home():
-    clear_window(game_window)
+    clear_window(game.window)
     display_cookies()
     messagebox.showinfo(message='You get home and find the mugger with your wife.')
-    game_window.destroy()
+    game.window.destroy()
 
 
 def yes_baby():
@@ -195,20 +198,20 @@ def seduce_the_dog():
                         '''You've successfully seduced the dog.
                         The mugger may be sleeping with your wife 
                         but you came out on top.''')
-    game_window.destroy()
+    game.window.destroy()
 
 
 def mugger_choice():
-    clear_window(game_window)
+    clear_window(game.window)
     display_cookies()
     # oh_fuck_button.destroy()
     place_bottom_left(fight_mugger_button)
-    place_bottom_right(Button(game_window, text=f'Give him your {counter.item}s', command=surrender_cookies, width=20, height=3),
+    place_bottom_right(Button(game.window, text=f'Give him your {counter.item}s', command=surrender_cookies, width=20, height=3),
                        100)
 
 
 def fight_setup():
-    clear_window(game_window)
+    clear_window(game.window)
     display_cookies()
     place_center(won_fight_label)
     place_bottom_right(patch_up_button, 200)
@@ -231,71 +234,68 @@ def fight_mugger():
     counter.count -= 1
     display_cookies()
     if not patched_up:
-        game_window.after(70, fight_mugger)
+        game.window.after(70, fight_mugger)
     else:
         messagebox.showinfo(message=f'''Congratulations, you've won. You have {counter.count} {counter.item}s.
     Unfortunately the mugger is sleeping with your wife.''')
-        game_window.destroy()
+        game.window.destroy()
 
 
 def player_dies():
-    clear_window(game_window)
+    clear_window(game.window)
     label = Label(text=f'''You lost all your {counter.item}s. You're dead.''')
     place_top_left(label)
     game_over_button.place(x=350, y=150)
 
-def start_game(start_count = 0):
-    counter.count = start_count
-    draw_base_layout()
-    place_bottom_right(button_add_one)
-
 def draw_base_layout():
-    clear_window(game_window)
+    clear_window(game.window)
     display_cookies()
 
 def end_game():
-    game_window.destroy()
+    game.window.destroy()
 
 
 
 counter = Counter()
 
 # Buttons
-button_change_to_eggs = Button(game_window, text='I don\'t like cookies', height=3, width=25, command=change_to_eggs)
-button_add_one = Button(game_window, text='Click Me', height=3, width=10, command=add_cookies)
+button_change_to_eggs = Button(game.window, text='I don\'t like cookies', height=3, width=25, command=change_to_eggs)
+button_add_one = Button(game.window, text='Click Me', height=3, width=10, command=add_cookies)
 
-label_cookie_count = Label(game_window, text=f'Number of {counter.item}: {counter.count}')
+label_cookie_count = Label(game.window, text=counter.count_info)
 
-start_game(start_count=0)
+# START GAME
+draw_base_layout()
+place_bottom_right(button_add_one)
 
 # Switcheroo Stuff
-gotcha_label = Label(game_window, text='gotcha')
+gotcha_label = Label(game.window, text='gotcha')
 switcheroo_number = random.randrange(31, 39)
 crafty = False
 has_switcherood = False
-drop_10_button = Button(game_window, text=f'Drop 10 {counter.item}s', height=3, width=16, command=drop_10_cookies)
-drop_20_button = Button(game_window, text=f'Drop 20 {counter.item}s', height=3, width=16, command=drop_20_cookies)
+drop_10_button = Button(game.window, text=f'Drop 10 {counter.item}s', height=3, width=16, command=drop_10_cookies)
+drop_20_button = Button(game.window, text=f'Drop 20 {counter.item}s', height=3, width=16, command=drop_20_cookies)
 
 # Death stuff
-game_over_button = Button(game_window, text='I\'m an idiot', height=3, width=16, command=end_game)
+game_over_button = Button(game.window, text='I\'m an idiot', height=3, width=16, command=end_game)
 # placeCenter(game_over_button)
 
 # Mugging Stuff
-mugger_label = Label(game_window, text='Oh no, a mugger!!')
-oh_fuck_button = Button(game_window, text='balls', height=3, width=10, command=mugger_choice)
+mugger_label = Label(game.window, text='Oh no, a mugger!!')
+oh_fuck_button = Button(game.window, text='balls', height=3, width=10, command=mugger_choice)
 # surrender_cookies_button = Button(root, text=f'Give him your {confectionary}s', command=surrenderCookies, width=20, height=3)
 
 # Fight mugger Stuff
-fight_mugger_button = Button(game_window, text='Fight', command=fight_setup, width=7, height=3)
-won_fight_label = Label(game_window, text=f'''You managed to fend him off but he stabbed you
+fight_mugger_button = Button(game.window, text='Fight', command=fight_setup, width=7, height=3)
+won_fight_label = Label(game.window, text=f'''You managed to fend him off but he stabbed you
 You're leaking {counter.item}s''')
 bleed_severity = 5
 bleed_count = 0
-patch_up_button = Button(game_window, text='Plug the bleed', command=patch_yourself_up)
+patch_up_button = Button(game.window, text='Plug the bleed', command=patch_yourself_up)
 patched_up = False
 
 # Dog stuff
 yes_baby_button = Button(text='Yes baby!', width=10, height=3, command=yes_baby)
 kinky_clicks = 0
 
-game_window.mainloop()
+game.window.mainloop()
