@@ -1,5 +1,5 @@
-def place_bottom_right(thing, adjust):
-    thing.place(x=480 - adjust, y=300)
+def place_bottom_right(thing, x_offset = 0):
+    thing.place(x=480 - x_offset, y=300)
 
 
 def place_bottom_left(thing):

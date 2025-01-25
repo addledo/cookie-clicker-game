@@ -4,6 +4,7 @@ from tkinter import Button
 from tkinter import Label
 from tkinter import messagebox
 from place import *
+from item_counter import Counter
 
 # FIXES BLURRY TEXT ON WINDOWS -----------------
 # from ctypes import windll
@@ -20,78 +21,70 @@ game_window.attributes('-topmost', 1)
 
 
 def display_cookies():
-    global number_of_item
-    label_cookie_count.configure(text=f'Number of {item_name}s: {number_of_item}')
+    label_cookie_count.configure(text=f'Number of {counter.item}s: {counter.count}')
     place_top_left(label_cookie_count)
 
 
 def add_cookies():
-    global number_of_item
-    number_of_item += 1
+    counter.count += 1
     global crafty
     if crafty:
         Label(text='You\'re a crafty bugger aren\'t you').place(x=60, y=240)
     crafty = False
-    encouraging_messages(number_of_item)
+    encouraging_messages(counter.count)
     no_cookies_fun()
     global switcheroo_number
-    if number_of_item == switcheroo_number:
+    if counter.count == switcheroo_number:
         ol_switcheroo()
-    if number_of_item == 89:
+    if counter.count == 89:
         switch_back()
-    if number_of_item == 100:
+    if counter.count == 100:
         get_mugged()
 
 
 def encouraging_messages(display_text):
-    global number_of_item
-    display_text = f'Number of {item_name}s: {number_of_item}'
-    if 10 < number_of_item < 20:
+    display_text = f'Number of {counter.item}s: {counter.count}'
+    if 10 < counter.count < 20:
         display_text += '           Keep going!'
-    if 30 < number_of_item < 40:
-        display_text += f'           So many {item_name}s!'
-    if number_of_item == 69:
+    if 30 < counter.count < 40:
+        display_text += f'           So many {counter.item}s!'
+    if counter.count == 69:
         display_text += '            Nice.'
-    if 80 < number_of_item < 90:
+    if 80 < counter.count < 90:
         display_text += '           Things seem very peaceful.'
     label_cookie_count.configure(text=display_text)
     place_top_left(label_cookie_count)
 
 
 def no_cookies_fun():
-    global number_of_item
-    global item_name
-    if number_of_item == 5:
+    if counter.count == 5:
         button_change_to_eggs.place(x=100, y=150)
 
-    if number_of_item > 8 or item_name == 'egg':
+    if counter.count > 8 or counter.item == 'egg':
         button_change_to_eggs.place_forget()
 
 
 def change_to_eggs():
-    global item_name
-    item_name = 'egg'
+    counter.item = 'egg'
     global drop_10_button
     global drop_20_button
-    drop_10_button = Button(game_window, text=f'Drop 10 {item_name}s', height=3, width=16, command=drop_10_cookies)
-    drop_20_button = Button(game_window, text=f'Drop 20 {item_name}s', height=3, width=16, command=drop_20_cookies)
+    drop_10_button = Button(game_window, text=f'Drop 10 {counter.item}s', height=3, width=16, command=drop_10_cookies)
+    drop_20_button = Button(game_window, text=f'Drop 20 {counter.item}s', height=3, width=16, command=drop_20_cookies)
     display_cookies()
 
 
 def drop_cookies(num):
-    global number_of_item
-    number_of_item -= num
+    counter.count -= num
     display_cookies()
-    if number_of_item < 0:
-        you_die()
+    if counter.count < 0:
+        player_dies()
     global crafty
     crafty = False
 
 
 def drop_10_cookies():
-    global number_of_item
     drop_cookies(10)
-    if number_of_item > 0:
+    if counter.count > 0:
         gotcha_label.place(x=450, y=270)
 
 
@@ -129,14 +122,13 @@ def get_mugged():
 
 def surrender_cookies():
     clear_window(game_window)
-    global number_of_item
-    number_of_item = 1
+    counter.count = 1
     display_cookies()
-    Label(text=f'''The mugger takes pity on you and lets you keep 1 {item_name}.
+    Label(text=f'''The mugger takes pity on you and lets you keep 1 {counter.item}.
     
     
 As he leaves, a stray dog appears and locks eyes
-onto your one remaining {item_name}.''').place(x=50, y=100)
+onto your one remaining {counter.item}.''').place(x=50, y=100)
     place_bottom_left(Button(text='Punt the dog', width=12, height=2, command=punt_dog))
     place_bottom_right(Button(text='Run', width=10, height=2, command=run_from_dog), 0)
 
@@ -211,7 +203,7 @@ def mugger_choice():
     display_cookies()
     # oh_fuck_button.destroy()
     place_bottom_left(fight_mugger_button)
-    place_bottom_right(Button(game_window, text=f'Give him your {item_name}s', command=surrender_cookies, width=20, height=3),
+    place_bottom_right(Button(game_window, text=f'Give him your {counter.item}s', command=surrender_cookies, width=20, height=3),
                        100)
 
 
@@ -232,65 +224,57 @@ def patch_yourself_up():
 
 
 def fight_mugger():
-    global number_of_item
     global patched_up
-    if number_of_item <= 0:
-        you_die()
+    if counter.count <= 0:
+        player_dies()
         return
-    number_of_item -= 1
+    counter.count -= 1
     display_cookies()
     if not patched_up:
         game_window.after(70, fight_mugger)
     else:
-        messagebox.showinfo(message=f'''Congratulations, you've won. You have {number_of_item} {item_name}s.
+        messagebox.showinfo(message=f'''Congratulations, you've won. You have {counter.count} {counter.item}s.
     Unfortunately the mugger is sleeping with your wife.''')
         game_window.destroy()
 
 
-
-
-def you_die():
+def player_dies():
     clear_window(game_window)
-    place_top_left(Label(text=f'''You lost all your {item_name}s. You're dead.
-    Yes it makes sense.'''))
+    label = Label(text=f'''You lost all your {counter.item}s. You're dead.''')
+    place_top_left(label)
     game_over_button.place(x=350, y=150)
 
+def start_game(start_count = 0):
+    counter.count = start_count
+    draw_base_layout()
+    place_bottom_right(button_add_one)
 
-def start_game(start_cookies):
-    global number_of_item
-    number_of_item = start_cookies
+def draw_base_layout():
     clear_window(game_window)
     display_cookies()
-    place_bottom_right(button_add_one, 0)
-    place_top_left(label_cookie_count)
-    # cookie_count_label.place(x=50, y=50)
-
 
 def end_game():
     game_window.destroy()
 
 
 
-
-item_name = ('cookie')
-number_of_item = 0
-likes_cookies = True
-
+counter = Counter()
 
 # Buttons
 button_change_to_eggs = Button(game_window, text='I don\'t like cookies', height=3, width=25, command=change_to_eggs)
 button_add_one = Button(game_window, text='Click Me', height=3, width=10, command=add_cookies)
-label_cookie_count = Label(game_window, text=f'Number of {item_name}: {number_of_item}')
 
-start_game(0)  # <---- Number of cookies to start with
+label_cookie_count = Label(game_window, text=f'Number of {counter.item}: {counter.count}')
+
+start_game(start_count=0)
 
 # Switcheroo Stuff
 gotcha_label = Label(game_window, text='gotcha')
 switcheroo_number = random.randrange(31, 39)
 crafty = False
 has_switcherood = False
-drop_10_button = Button(game_window, text=f'Drop 10 {item_name}s', height=3, width=16, command=drop_10_cookies)
-drop_20_button = Button(game_window, text=f'Drop 20 {item_name}s', height=3, width=16, command=drop_20_cookies)
+drop_10_button = Button(game_window, text=f'Drop 10 {counter.item}s', height=3, width=16, command=drop_10_cookies)
+drop_20_button = Button(game_window, text=f'Drop 20 {counter.item}s', height=3, width=16, command=drop_20_cookies)
 
 # Death stuff
 game_over_button = Button(game_window, text='I\'m an idiot', height=3, width=16, command=end_game)
@@ -304,7 +288,7 @@ oh_fuck_button = Button(game_window, text='balls', height=3, width=10, command=m
 # Fight mugger Stuff
 fight_mugger_button = Button(game_window, text='Fight', command=fight_setup, width=7, height=3)
 won_fight_label = Label(game_window, text=f'''You managed to fend him off but he stabbed you
-You're leaking {item_name}s''')
+You're leaking {counter.item}s''')
 bleed_severity = 5
 bleed_count = 0
 patch_up_button = Button(game_window, text='Plug the bleed', command=patch_yourself_up)
