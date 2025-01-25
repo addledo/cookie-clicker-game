@@ -11,22 +11,11 @@ from game import Game
 # from ctypes import windll
 #windll.shcore.SetProcessDpiAwareness(1)
 
-# Window Settings
-# game.window = tk.Tk()
-# game.window.title('Jonty\'s Sweet Cookie Clicker')
-# game.window.geometry('650x450+700+300')
-# game.window.resizable(False, False)
-# game.window.attributes('-topmost', 1)
-
 game = Game()
 
-
-
-
 def display_cookies():
-    label_cookie_count.configure(text=f'Number of {counter.item}s: {counter.count}')
+    label_cookie_count.configure(text=counter.count_info)
     place_top_left(label_cookie_count)
-
 
 def add_cookies():
     counter.count += 1
@@ -71,8 +60,8 @@ def change_to_eggs():
     counter.item = 'egg'
     global drop_10_button
     global drop_20_button
-    drop_10_button = Button(game.window, text=f'Drop 10 {counter.item}s', height=3, width=16, command=drop_10_cookies)
-    drop_20_button = Button(game.window, text=f'Drop 20 {counter.item}s', height=3, width=16, command=drop_20_cookies)
+    drop_10_button = Button(game.window, text=f'Drop 10 {counter.item}s', height=3, width=16, command=lambda: drop_cookies(10))
+    drop_20_button = Button(game.window, text=f'Drop 20 {counter.item}s', height=3, width=16, command=lambda: drop_cookies(20))
     display_cookies()
 
 
@@ -83,16 +72,6 @@ def drop_cookies(num):
         player_dies()
     global crafty
     crafty = False
-
-
-def drop_10_cookies():
-    drop_cookies(10)
-    if counter.count > 0:
-        gotcha_label.place(x=450, y=270)
-
-
-def drop_20_cookies():
-    drop_cookies(20)
 
 
 def ol_switcheroo():
@@ -273,8 +252,8 @@ gotcha_label = Label(game.window, text='gotcha')
 switcheroo_number = random.randrange(31, 39)
 crafty = False
 has_switcherood = False
-drop_10_button = Button(game.window, text=f'Drop 10 {counter.item}s', height=3, width=16, command=drop_10_cookies)
-drop_20_button = Button(game.window, text=f'Drop 20 {counter.item}s', height=3, width=16, command=drop_20_cookies)
+drop_10_button = Button(game.window, text=f'Drop 10 {counter.item}s', height=3, width=16, command=lambda: drop_cookies(10))
+drop_20_button = Button(game.window, text=f'Drop 20 {counter.item}s', height=3, width=16, command=lambda: drop_cookies(20))
 
 # Death stuff
 game_over_button = Button(game.window, text='I\'m an idiot', height=3, width=16, command=end_game)
