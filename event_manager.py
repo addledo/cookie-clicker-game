@@ -4,13 +4,14 @@ from subscribers import *
 class EventManager:
     def __init__(self, game):
         self.game = game
+        self.sub_manager = SubManager
 
         # Events
         self.switcheroo = Switcheroo(self.game)
         self.egg_change = EggChange(self.game)
 
         # Event subscribers
-        subscribe('switcheroo_threshold_reached', self.switcheroo.trigger)
+        self.sub_manager.subscribe('switcheroo_threshold_reached', self.switcheroo.trigger)
         subscribe('egg_change_threshold_reached', self.egg_change.trigger)
 
         # Event trigger thresholds
