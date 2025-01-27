@@ -1,5 +1,6 @@
 from counter import Counter
-from gameui import *
+from gameui import GameUI
+import gameui
 from event_manager import EventManager
 
 
@@ -11,7 +12,7 @@ class Game:
 
     def start(self):
         self.ui.reset_layout()
-        place_bottom_right(self.ui.b_click_me)
+        gameui.place_bottom_right(self.ui.b_click_me)
         self.ui.window.mainloop()
 
     def end(self):
@@ -26,17 +27,17 @@ class Game:
         if self.counter.count < 0:
             self.player_dies()
 
+    # TODO Move this
     def player_dies(self):
         self.ui.clear_window()
-        death_message = Label(text=f'''You lost all your {self.counter.item_type}s. You're dead.''')
-        place_top_left(death_message)
+        import tkinter as tk
+        death_message = tk.Label(self.ui.window, text=f'''You lost all your {self.counter.item_type}s. You're dead.''')
+        gameui.place_top_left(death_message)
         self.ui.b_end_game.place(x=350, y=150)
 
 
 
 def main():
-    game = Game()
-    game.counter.count = 0
-    game.start()
+    gameui.start_main_window()
 
 if __name__ == "__main__": main()

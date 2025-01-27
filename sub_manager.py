@@ -1,5 +1,3 @@
-from event import Switcheroo
-
 class SubManager:
     def __init__(self):
         self.subscribers = dict()
@@ -28,4 +26,3 @@ class SubManager:
         for fn in self.subscribers[event_type]:
             fn()
             return "SUCCESS"
-
